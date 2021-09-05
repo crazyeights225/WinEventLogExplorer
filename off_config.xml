@@ -1,0 +1,127 @@
+<!--
+  sysmon-config | A sysmon configuration focused on default high-quality event tracing and easy customization by the community
+  Master version:	50 | Date: 2017-03-02
+  Master author:	@SwiftOnSecurity, with contributors also credited in-line or on Git.
+  Master project:	https://github.com/SwiftOnSecurity/sysmon-config
+  Master license:	Creative Commons Attribution 4.0 | You may privatize, fork, edit, teach, publish, or deploy for commercial use - with attribution in the text.
+
+  Fork version:	300
+  Fork author:	ionstorm
+  Fork project:	https://github.com/ion-storm/sysmon-config
+  Fork license:	Creative Commons Attribution 4.0 | You may privatize, fork, edit, teach, publish, or deploy for commercial use - with attribution in the text.
+
+  REQUIRED: Sysmon version 8.00 or higher, it's recommended you stay updated.
+-->
+
+<Sysmon schemaversion="4.10">
+	<!--SYSMON META CONFIG-->
+	<HashAlgorithms>md5,imphash,sha256</HashAlgorithms> <!-- Both MD5 and SHA256 are the industry-standard algorithms for identifying files -->
+	<CheckRevocation/> <!-- Check loaded drivers, log if their code-signing certificate has been revoked, in case malware stole one to sign a kernel driver -->
+
+	<!-- <ImageLoad/> --> <!-- Would manually force-on ImageLoad monitoring, even without configuration below. Included only documentation. -->
+	<!-- <ProcessAccessConfig/> --> <!-- Would manually force-on ProcessAccess monitoring, even without configuration below. Included only documentation. -->
+	<!-- <PipeMonitoringConfig/> --> <!-- Would manually force-on PipeCreated / PipeConnected events, even without configuration below. Included only documentation. -->
+
+	<EventFiltering>
+	<!--SYSMON EVENT ID 1 : PROCESS CREATION [ProcessCreate]-->
+		<ProcessCreate onmatch="include">
+		</ProcessCreate>
+
+	<!--SYSMON EVENT ID 2 : FILE CREATION TIME RETROACTIVELY CHANGED IN THE FILESYSTEM [FileCreateTime]-->
+	
+		<FileCreateTime onmatch="include">
+		</FileCreateTime>
+
+	<!--SYSMON EVENT ID 3 : NETWORK CONNECTION INITIATED [NetworkConnect]-->
+		<NetworkConnect onmatch="include">
+		</NetworkConnect>
+		
+	<!--SYSMON EVENT ID 4 : RESERVED FOR SYSMON STATUS MESSAGES-->
+
+		<!--DATA: UtcTime, State, Version, SchemaVersion-->
+		<!--Cannot be filtered.-->
+
+	<!--SYSMON EVENT ID 5 : PROCESS ENDED [ProcessTerminate]-->
+		<!--COMMENT:	Useful data in building infection timelines.-->
+
+		<ProcessTerminate onmatch="include">
+		</ProcessTerminate>
+
+	<!--SYSMON EVENT ID 6 : DRIVER LOADED INTO KERNEL [DriverLoad]-->
+		<DriverLoad onmatch="include">
+		</DriverLoad>
+
+	<!--SYSMON EVENT ID 7 : DLL (IMAGE) LOADED BY PROCESS [ImageLoad]-->
+		<ImageLoad onmatch="include">
+		</ImageLoad>
+
+	<!--SYSMON EVENT ID 8 : REMOTE THREAD CREATED [CreateRemoteThread]-->
+		<CreateRemoteThread onmatch="include">
+		</CreateRemoteThread>
+	
+	<!--SYSMON EVENT ID 9 : RAW DISK ACCESS [RawAccessRead]-->
+		<!--EVENT 9: "RawAccessRead detected"-->
+		<!--COMMENT:	Can cause high system load, disabled by default.-->
+		<RawAccessRead onmatch="include">
+		</RawAccessRead>
+
+	<!--SYSMON EVENT ID 10 : INTER-PROCESS ACCESS [ProcessAccess]-->
+		<!--EVENT 10: "Process accessed"-->
+		<!--COMMENT:	Can cause high system load, disabled by default.-->
+		<ProcessAccess onmatch="include">
+		</ProcessAccess>
+
+	<!--SYSMON EVENT ID 11 : FILE CREATED [FileCreate]-->
+		<!--EVENT 11: "File created"-->
+		
+		<FileCreate onmatch="include">
+		</FileCreate>
+		
+
+	<!--SYSMON EVENT ID 12 & 13 & 14 : REGISTRY MODIFICATION [RegistryEvent]-->
+		<!--EVENT 12: "Registry object added or deleted"-->
+		<!--EVENT 13: "Registry value set-->
+		<!--EVENT 14: "Registry objected renamed"-->
+		
+		<RegistryEvent onmatch="include">
+		</RegistryEvent>
+
+	<!--SYSMON EVENT ID 15 : ALTERNATE DATA STREAM CREATED [FileCreateStreamHash]-->
+		<!--EVENT 15: "File stream created"-->
+		<FileCreateStreamHash onmatch="include">
+		</FileCreateStreamHash>
+
+	<!--SYSMON EVENT ID 16 : SYSMON CONFIGURATION CHANGE-->
+		<!--EVENT 16: "Sysmon config state changed"-->
+		<!--COMMENT:	This ONLY logs if the hash of the configuration changes. Running "sysmon.exe -c" with the current configuration will not be logged with Event 16-->
+
+
+	<!--SYSMON EVENT ID 17 & 18 : PIPE CREATED / PIPE CONNECTED [PipeEvent]-->
+		<!--EVENT 17: "Pipe Created"-->
+		<!--EVENT 18: "Pipe Connected"-->
+
+		<PipeEvent onmatch="include">
+		</PipeEvent>
+		
+
+	<!--SYSMON EVENT ID 19 & 20 & 21 : WMI EVENT MONITORING [WmiEvent]-->
+		<!--EVENT 19: "WmiEventFilter activity detected"-->
+		<!--EVENT 20: "WmiEventConsumer activity detected"-->
+		<!--EVENT 21: "WmiEventConsumerToFilter activity detected"-->
+		<WmiEvent onmatch="include">
+		</WmiEvent>
+
+	<!--SYSMON EVENT ID 25 : PROCESS TAMPERING [ProcessTampering]-->
+		<!--EVENT 25: "Process Tampering"-->
+		<!--COMMENT:	This event is generated when a process image is changed from an external source, such as a different process.
+			This may or may not provide value in your environment as it requires tuning and a SIEM to correlate the ProcessGuids.
+			[ https://medium.com/falconforce/sysmon-13-process-tampering-detection-820366138a6c ] -->
+		
+	<!--SYSMON EVENT ID 255 : ERROR-->
+		<!--"This event is generated when an error occurred within Sysmon. They can happen if the system is under heavy load
+			and certain tasked could not be performed or a bug exists in the Sysmon service. You can report any bugs on the
+			Sysinternals forum or over Twitter (@markrussinovich)."-->
+		<!--Cannot be filtered.-->
+
+	</EventFiltering>
+</Sysmon>
