@@ -4,7 +4,11 @@ Capture all events across all logs produced during the running of a particular e
 
 Nothing special but useful for collecting exploit/threat data for detection engineering, pen-testing, etc.
 
-Follows the Matt Graeber method:
+Follows the Matt Graeber method from his talk here:
+[1 05 How do I detect technique X in Windows Applied Methodology to Definitively Answer this Question](https://www.youtube.com/watch?v=GVRIUsgrwSQ).
+
+This is generally:
+
 1. Understand the Implementation
 2. Develop Attack Validations
 	- Develop as many attack variants as possible.
@@ -81,11 +85,11 @@ This method is to get all the events that are produced during the running of an 
 
 You must change the attack command (line 99) to the command of the exploit/script you want to test before using it (see examples for command format)
 ```ps1	
-	# Perform Attack Here:
-	# ---------------------------------------------------------------------
+# Perform Attack Here:
+# ---------------------------------------------------------------------
 	
-	# Examples (REPLACE ME):
-	& cmd.exe /c notepad.exe
+# Examples (REPLACE ME):
+& cmd.exe /c notepad.exe
 ```
 
 It works as follows:
@@ -103,7 +107,7 @@ Example with command `cmd.exe /c notepad.exe`:
 
 ### Export Formats:
 
-Events are exported to a TXT and HTML file.
+Events are exported to a TXT and HTML file, named by timestamp
 
 ![docs/14.png](docs/14.png)
 
@@ -121,6 +125,7 @@ Toggle events to find the ones that are relevant and export to TXT file.
 ### Conifguration:
 
 Change the following constants to modify the search intervals:
+
 **You must change the sysmon path** to use the sysmon config toggle functionality.
 ```ps1
 # CONSTANTS:
